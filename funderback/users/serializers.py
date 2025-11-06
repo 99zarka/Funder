@@ -50,9 +50,9 @@ class UserLoginSerializer(serializers.Serializer):
         password = data.get("password")
 
         if email and password:
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
+            user = User.objects.filter(email=email).first()
+
+            if not user:
                 raise serializers.ValidationError({"non_field_errors": ["Invalid credentials."]})
 
             if not user.is_active:
