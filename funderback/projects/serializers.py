@@ -28,3 +28,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_current_funding(self, obj):
         return obj.contributions.aggregate(total=models.Sum('amount'))['total'] or 0
+
+    def validate(self, data):
+        if 'start_time' in data and 'end_time' in data:
+            if data['end_time'] < data['start_time']:
+                raise serializers.ValidationError({"end_time": "End Date cannot be before Start Date."})
+        return data

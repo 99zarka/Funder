@@ -28,6 +28,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Passwords do not match."})
         if not re.match(r"^01[0-2,5]{1}[0-9]{8}$", data["mobile_phone"]):
             raise serializers.ValidationError({"mobile_phone": "Mobile phone number must be a valid Egyptian number."})
+        if User.objects.filter(email=data["email"]).exists():
+            raise serializers.ValidationError({"email": "User with this email already exists."})
         return data
 
     def create(self, validated_data):

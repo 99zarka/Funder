@@ -1,61 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const { register, handleSubmit, setError, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Integrate with backend API
-    fetch(`${API_BASE_URL}/users/login/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-      }),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Login successful:", data);
-        localStorage.setItem('access_token', data.access);
-        localStorage.setItem('refresh_token', data.refresh);
-        // Redirect to profile/dashboard
-        window.location.href = '/profile'; // Or use navigate from react-router-dom
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        // Show error message
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.non_field_errors) {
+          setError("general", { type: "manual", message: result.non_field_errors[0] });
+        } else if (result.email) {
+          setError("email", { type: "manual", message: result.email[0] });
+        } else if (result.password) {
+          setError("password", { type: "manual", message: result.password[0] });
+        } else {
+          setError("general", { type: "manual", message: "An unexpected error occurred during login." });
+        }
+        console.error("Login error:", result);
+        return;
+      }
+
+      console.log("Login successful:", result);
+      localStorage.setItem('access_token', result.access);
+      localStorage.setItem('refresh_token', result.refresh);
+      navigate('/profile');
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("general", { type: "manual", message: "Network error or server unreachable." });
+    }
   };
 
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <input
+            type="email"
+            {...register("email", { required: "Email is required", pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" } })}
+          />
+          {errors.email && <p>{errors.email.message}</p>}
         </div>
         <div>
           <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+          <input
+            type="password"
+            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must have at least 6 characters" } })}
+          />
+          {errors.password && <p>{errors.password.message}</p>}
         </div>
+        {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
         <button type="submit">Login</button>
       </form>
     </div>

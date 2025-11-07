@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError # Changed import
 from django.utils import timezone
 from .models import Project, Contribution
 from .serializers import ProjectSerializer, ContributionSerializer
