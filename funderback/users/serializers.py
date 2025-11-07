@@ -3,7 +3,12 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
 import re
-from projects.serializers import ProjectSerializer # Import ProjectSerializer
+from rest_framework import serializers
+from rest_framework import serializers
+from django.contrib.auth import get_user_model, authenticate
+from django.core.exceptions import ValidationError
+import re
+from projects.serializers import ProjectSerializer, ContributionSerializer # Import ProjectSerializer and ContributionSerializer
 
 User = get_user_model()
 
@@ -46,16 +51,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    projects = ProjectSerializer(many=True, read_only=True) # Add projects field
+    projects = ProjectSerializer(many=True, read_only=True)
+    contributions = ContributionSerializer(many=True, read_only=True) # Add contributions field
 
     class Meta:
         model = User
         fields = (
+            "id", # Include the user ID
             "first_name",
             "last_name",
             "email",
             "mobile_phone",
-            "projects", # Include projects in the fields
+            "projects",
+            "contributions", # Include contributions in the fields
         )
         read_only_fields = ("email",) # Email should not be editable via profile update
 

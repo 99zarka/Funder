@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
 
 const LoginPage = () => {
@@ -69,6 +69,9 @@ const LoginPage = () => {
         {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
         <button type="submit">Login</button>
       </form>
+      <p>
+        Don't have an account? <Link to="/register">Register here</Link>.
+      </p>
     </div>
   );
 };

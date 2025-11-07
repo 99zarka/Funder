@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
 
 const CreateProjectPage = () => {
@@ -106,6 +106,9 @@ const CreateProjectPage = () => {
         {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
         <button type="submit">Create Project</button>
       </form>
+      <p>
+        <Link to="/my-projects">View My Projects</Link> or <Link to="/projects">View All Projects</Link>.
+      </p>
     </div>
   );
 };

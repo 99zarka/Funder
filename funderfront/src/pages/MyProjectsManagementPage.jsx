@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate and Link
 import API_BASE_URL from '../config';
 
 const MyProjectsManagementPage = () => {
@@ -69,13 +69,13 @@ const MyProjectsManagementPage = () => {
       {myProjects.length > 0 ? (
         myProjects.map((project) => (
           <div key={project.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-            <h2>{project.title}</h2>
+            <h2><Link to={`/projects/${project.id}`}>{project.title}</Link></h2>
             <p>{project.details}</p>
             <p>Target: ${project.total_target} | Raised: ${project.current_funds}</p>
             <p>Dates: {project.start_time} to {project.end_time}</p>
             <button onClick={() => handleEditProject(project.id)}>Edit</button>
             <button onClick={() => handleDeleteProject(project.id)}>Delete</button>
-            <a href={`/projects/${project.id}`}>View Details</a>
+            <Link to={`/projects/${project.id}`}>View Details</Link>
           </div>
         ))
       ) : (

@@ -56,9 +56,17 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        # Prefetch related projects to avoid N+1 queries when serializing
-        return User.objects.prefetch_related('projects')
+        # Prefetch related projects and contributions to avoid N+1 queries when serializing
+        return User.objects.prefetch_related('projects', 'contributions')
 
     def get_object(self):
-        # Ensure the user object retrieved includes prefetched projects
+        # If a primary key (pk) is provided in the URL, retrieve that user's profile.
+        # Otherwise, retrieve the profile of the authenticated user.
+        if self.kwargs.get('pk'):
+            return self.get_queryset().get(pk=self.kwargs['pk'])
         return self.get_queryset().get(pk=self.request.user.pk)
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (permissions.AllowAny,)

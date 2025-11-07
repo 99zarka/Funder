@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom'; // Import Link
 import { useForm } from 'react-hook-form';
 import API_BASE_URL from '../config';
 
@@ -152,6 +152,9 @@ const EditProjectPage = () => {
         </div>
         <button type="submit">Update Project</button>
       </form>
+      <p>
+        <Link to={`/projects/${id}`}>View Project Details</Link> | <Link to="/my-projects">Back to My Projects</Link>
+      </p>
     </div>
   );
 };

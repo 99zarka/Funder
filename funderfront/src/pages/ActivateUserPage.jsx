@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import API_BASE_URL from '../config';
+import { Link } from 'react-router-dom';
 
 const ActivateUserPage = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ const ActivateUserPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(data.message);
+        setMessage(data.message + " You can now log in.");
       } else {
         setError(data.error || 'Activation failed.');
       }
@@ -48,7 +49,7 @@ const ActivateUserPage = () => {
         </div>
         <button type="submit">Activate</button>
       </form>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {message && <p style={{ color: 'green' }}>{message} <Link to="/login">Login here</Link>.</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );

@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom'; // Import useNavigate and Link
 import { useForm } from 'react-hook-form';
+import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
 import API_BASE_URL from '../config';
 
 const ProjectDetailsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [project, setProject] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null); // State to store current user's ID
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm();
 
   useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setCurrentUserId(decodedToken.user_id); // Assuming user_id is in the token
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+
     const fetchProjectDetails = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/projects/${id}/`);
@@ -25,7 +38,7 @@ const ProjectDetailsPage = () => {
   const onSubmitContribution = async (data) => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      // Redirect to login or show error
+      navigate('/login'); // Redirect to login page
       return;
     }
 
@@ -77,9 +90,13 @@ const ProjectDetailsPage = () => {
 
   return (
     <div>
+      <p><Link to="/projects">Back to All Projects</Link></p>
       <h1>{project.title}</h1>
+      {currentUserId === project.owner && ( // Conditionally render Edit button
+        <p><Link to={`/edit-project/${project.id}`}>Edit Project</Link></p>
+      )}
       <p><strong>Details:</strong> {project.details}</p>
-      <p><strong>Owner:</strong> {project.owner_full_name}</p>
+      <p><strong>Owner:</strong> <Link to={`/profile/${project.owner}`}>{project.owner_full_name}</Link></p>
       <p><strong>Target:</strong> ${project.total_target}</p>
       <p><strong>Funds Raised:</strong> ${project.current_funding}</p>
       <p><strong>Start Date:</strong> {project.start_time}</p>
@@ -105,6 +122,21 @@ const ProjectDetailsPage = () => {
         {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
         <button type="submit">Contribute</button>
       </form>
+
+      <h2>Contributions</h2>
+      {project.contributions && project.contributions.length > 0 ? (
+        <ul>
+          {project.contributions.map((contribution) => (
+            <li key={contribution.id}>
+              <p><strong>Contributor:</strong> <Link to={`/profile/${contribution.contributor}`}>{contribution.contributor_full_name}</Link></p>
+              <p><strong>Amount:</strong> ${contribution.amount}</p>
+              <p><strong>Date:</strong> {new Date(contribution.timestamp).toLocaleDateString()}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No contributions yet.</p>
+      )}
     </div>
   );
 };

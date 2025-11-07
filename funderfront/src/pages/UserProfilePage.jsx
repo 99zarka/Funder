@@ -1,40 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useParams } from 'react-router-dom'; // Import Link and useParams
+import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
 import API_BASE_URL from '../config';
 
 const UserProfilePage = () => {
+  const { id } = useParams(); // Get id from URL params
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null); // State to store current user's ID
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm();
 
   useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setCurrentUserId(decodedToken.user_id); // Assuming user_id is in the token
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+
     const fetchUserProfile = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        return;
+      const profileUrl = id ? `${API_BASE_URL}/users/profile/${id}/` : `${API_BASE_URL}/users/profile/`;
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/users/profile/`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(profileUrl, { headers });
         const data = await response.json();
         setUser(data);
-        reset({
-          firstName: data.first_name,
-          lastName: data.last_name,
-          email: data.email,
-          mobilePhone: data.mobile_phone,
-        });
+        // Only reset form if it's the authenticated user's profile
+        if (!id || parseInt(id) === currentUserId) {
+          reset({
+            firstName: data.first_name,
+            lastName: data.last_name,
+            email: data.email,
+            mobilePhone: data.mobile_phone,
+          });
+        }
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
     };
 
     fetchUserProfile();
-  }, [reset]);
+  }, [id, reset, currentUserId]); // Add id and currentUserId to dependency array
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -88,10 +102,13 @@ const UserProfilePage = () => {
     return <div>Loading user profile...</div>;
   }
 
+  // Determine if the current profile being viewed is the authenticated user's own profile
+  const isOwnProfile = !id || (currentUserId && parseInt(id) === currentUserId);
+
   return (
     <div>
-      <h1>User Profile</h1>
-      {isEditing ? (
+      <h1>User Profile: {user.first_name} {user.last_name}</h1>
+      {isOwnProfile && isEditing ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label>First Name:</label>
@@ -131,14 +148,14 @@ const UserProfilePage = () => {
           <p><strong>Last Name:</strong> {user.last_name}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Mobile Phone:</strong> {user.mobile_phone}</p>
-          <button onClick={handleEditToggle}>Edit Profile</button>
+          {isOwnProfile && <button onClick={handleEditToggle}>Edit Profile</button>}
 
           <h2>My Created Projects</h2>
           {user.projects && user.projects.length > 0 ? (
             <ul>
               {user.projects.map((project) => (
                 <li key={project.id}>
-                  <h3>{project.title}</h3>
+                  <h3><Link to={`/projects/${project.id}`}>{project.title}</Link></h3>
                   <p>{project.details}</p>
                   <p>Target: ${project.total_target} | Raised: ${project.current_funding}</p>
                 </li>
@@ -146,6 +163,22 @@ const UserProfilePage = () => {
             </ul>
           ) : (
             <p>No projects created yet.</p>
+          )}
+
+          <h2>My Contributions</h2>
+          {user.contributions && user.contributions.length > 0 ? (
+            <ul>
+              {user.contributions.map((contribution) => (
+                <li key={contribution.id}>
+                  <h3>Project: <Link to={`/projects/${contribution.project.id}`}>{contribution.project.title}</Link></h3>
+                  <p>Project Owner: <Link to={`/profile/${contribution.project.owner}`}>{contribution.project.owner_full_name}</Link></p>
+                  <p>Amount: ${contribution.amount}</p>
+                  <p>Date: {new Date(contribution.timestamp).toLocaleDateString()}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No contributions made yet.</p>
           )}
         </div>
       )}

@@ -11,6 +11,7 @@ import MyProjectsManagementPage from './pages/MyProjectsManagementPage';
 import EditProjectPage from './pages/EditProjectPage'; // Import the new component
 import Navbar from './components/Navbar';
 import ActivateUserPage from './pages/ActivateUserPage';
+import AllUsersPage from './pages/AllUsersPage';
 
 function App() {
   console.log("App component rendered");
@@ -23,11 +24,13 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/activate" element={<ActivateUserPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
+        <Route path="/profile/:id" element={<UserProfilePage />} /> {/* New route for other user profiles */}
         <Route path="/create-project" element={<CreateProjectPage />} />
         <Route path="/projects" element={<AllProjectsDashboard />} />
         <Route path="/projects/:id" element={<ProjectDetailsPage />} />
         <Route path="/my-projects" element={<MyProjectsManagementPage />} />
         <Route path="/edit-project/:id" element={<EditProjectPage />} /> {/* Add the new route */}
+        <Route path="/users" element={<AllUsersPage />} /> {/* New route for all users page */}
       </Routes>
     </Router>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import API_BASE_URL from '../config';
+import { Link } from 'react-router-dom';
 
 const RegisterPage = () => {
   const { register, handleSubmit, watch, setError, formState: { errors } } = useForm();
@@ -103,6 +104,9 @@ const RegisterPage = () => {
         </div>
         <button type="submit">Register</button>
       </form>
+      <p>
+        Already have an account? <Link to="/login">Login here</Link>.
+      </p>
     </div>
   );
 };
