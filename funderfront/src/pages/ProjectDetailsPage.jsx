@@ -65,7 +65,7 @@ const ProjectDetailsPage = () => {
     <div>
       <h1>{project.title}</h1>
       <p><strong>Details:</strong> {project.details}</p>
-      <p><strong>Owner:</strong> {project.owner}</p>
+      <p><strong>Owner:</strong> {project.owner_full_name}</p> {/* Use owner_full_name */}
       <p><strong>Target:</strong> ${project.total_target}</p>
       <p><strong>Funds Raised:</strong> ${project.current_funds}</p>
       <p><strong>Start Date:</strong> {project.start_time}</p>

@@ -1,36 +1,48 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import API_BASE_URL from '../config';
 
 const MyProjectsManagementPage = () => {
   const [myProjects, setMyProjects] = useState([]);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchMyProjects = async () => {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        // Redirect to login or show error
+        console.log('No access token found, redirecting to login.');
+        navigate('/login'); // Redirect to login if no token
         return;
       }
 
+      console.log('Fetching user projects with token:', token);
       try {
-        const response = await fetch(`${API_BASE_URL}/projects/user_projects/`, {
+        const response = await fetch(`${API_BASE_URL}/projects/my-projects/`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API response not OK:', response.status, errorText);
+          throw new Error(`Failed to fetch user projects: ${response.status} ${errorText}`);
+        }
+
         const data = await response.json();
+        console.log('Fetched user projects data:', data);
         setMyProjects(data);
       } catch (error) {
         console.error('Error fetching user projects:', error);
+        // Optionally set an error state to display to the user
       }
     };
 
     fetchMyProjects();
-  }, []);
+  }, [navigate]); // Add navigate to dependency array to ensure effect re-runs if navigate changes (though it's stable)
 
   const handleEditProject = (projectId) => {
-    console.log(`Editing project with ID: ${projectId}`);
-    // Implement navigation to an edit project page or open a modal
+    navigate(`/edit-project/${projectId}`);
   };
 
   const handleDeleteProject = async (projectId) => {

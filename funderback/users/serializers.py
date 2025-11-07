@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
 import re
+from projects.serializers import ProjectSerializer # Import ProjectSerializer
 
 User = get_user_model()
 
@@ -27,6 +29,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if not re.match(r"^01[0-2,5]{1}[0-9]{8}$", data["mobile_phone"]):
             raise serializers.ValidationError({"mobile_phone": "Mobile phone number must be a valid Egyptian number."})
         return data
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    projects = ProjectSerializer(many=True, read_only=True) # Add projects field
+
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "mobile_phone",
+            "projects", # Include projects in the fields
+        )
+        read_only_fields = ("email",) # Email should not be editable via profile update
 
     def create(self, validated_data):
         validated_data.pop("confirm_password")

@@ -8,6 +8,7 @@ import CreateProjectPage from './pages/CreateProjectPage';
 import AllProjectsDashboard from './pages/AllProjectsDashboard';
 import ProjectDetailsPage from './pages/ProjectDetailsPage';
 import MyProjectsManagementPage from './pages/MyProjectsManagementPage';
+import EditProjectPage from './pages/EditProjectPage'; // Import the new component
 import Navbar from './components/Navbar';
 import ActivateUserPage from './pages/ActivateUserPage';
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/projects" element={<AllProjectsDashboard />} />
         <Route path="/projects/:id" element={<ProjectDetailsPage />} />
         <Route path="/my-projects" element={<MyProjectsManagementPage />} />
+        <Route path="/edit-project/:id" element={<EditProjectPage />} /> {/* Add the new route */}
       </Routes>
     </Router>
   );

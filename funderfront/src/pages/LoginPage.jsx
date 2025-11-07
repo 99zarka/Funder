@@ -33,7 +33,10 @@ const LoginPage = () => {
       })
       .then((data) => {
         console.log("Login successful:", data);
-        // Store token and redirect to profile/dashboard
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+        // Redirect to profile/dashboard
+        window.location.href = '/profile'; // Or use navigate from react-router-dom
       })
       .catch((error) => {
         console.error("Login error:", error);

@@ -71,6 +71,7 @@ const AllProjectsDashboard = () => {
             <div key={project.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
               <h2>{project.title}</h2>
               <p>{project.details}</p>
+              <p>Owner: {project.owner_full_name}</p> {/* Display owner's full name */}
               <p>Funds Raised: ${project.current_funds} / ${project.total_target}</p>
               <p>Dates: {project.start_time} to {project.end_time}</p>
               <a href={`/projects/${project.id}`}>View Details</a>

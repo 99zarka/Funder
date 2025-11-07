@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import API_BASE_URL from '../config';
 
 const CreateProjectPage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [formData, setFormData] = useState({
     title: '',
     details: '',
@@ -39,7 +41,7 @@ const CreateProjectPage = () => {
       });
       const data = await response.json();
       console.log('Project created:', data);
-      // Redirect to project details or dashboard
+      navigate('/my-projects'); // Redirect to my projects after creation
     } catch (error) {
       console.error('Error creating project:', error);
     }
