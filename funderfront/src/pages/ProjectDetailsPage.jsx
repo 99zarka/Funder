@@ -49,7 +49,7 @@ const ProjectDetailsPage = () => {
       // Update project funds or show success message
       setProject((prevProject) => ({
         ...prevProject,
-        current_funds: prevProject.current_funds + parseFloat(contributionAmount),
+        current_funding: parseFloat(prevProject.current_funding) + parseFloat(contributionAmount),
       }));
       setContributionAmount('');
     } catch (error) {
@@ -67,7 +67,7 @@ const ProjectDetailsPage = () => {
       <p><strong>Details:</strong> {project.details}</p>
       <p><strong>Owner:</strong> {project.owner_full_name}</p> {/* Use owner_full_name */}
       <p><strong>Target:</strong> ${project.total_target}</p>
-      <p><strong>Funds Raised:</strong> ${project.current_funds}</p>
+      <p><strong>Funds Raised:</strong> ${project.current_funding}</p>
       <p><strong>Start Date:</strong> {project.start_time}</p>
       <p><strong>End Date:</strong> {project.end_time}</p>
 

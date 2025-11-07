@@ -30,6 +30,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"mobile_phone": "Mobile phone number must be a valid Egyptian number."})
         return data
 
+    def create(self, validated_data):
+        validated_data.pop("confirm_password")
+        user = User.objects.create_user(
+            username=validated_data["email"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+            mobile_phone=validated_data["mobile_phone"],
+            is_active=False
+        )
+        return user
+
 class UserProfileSerializer(serializers.ModelSerializer):
     projects = ProjectSerializer(many=True, read_only=True) # Add projects field
 
@@ -43,19 +56,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "projects", # Include projects in the fields
         )
         read_only_fields = ("email",) # Email should not be editable via profile update
-
-    def create(self, validated_data):
-        validated_data.pop("confirm_password")
-        user = User.objects.create_user(
-            username=validated_data["email"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
-            mobile_phone=validated_data["mobile_phone"],
-            is_active=False
-        )
-        return user
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

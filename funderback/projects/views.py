@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import Project
-from .serializers import ProjectSerializer
+from .models import Project, Contribution
+from .serializers import ProjectSerializer, ContributionSerializer
 
 class ProjectListCreateView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
@@ -34,6 +34,17 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user != instance.owner:
             self.permission_denied(self.request)
         instance.delete()
+
+class ProjectContributeView(generics.CreateAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ContributionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        project = get_object_or_404(Project, pk=self.kwargs["pk"])
+        if project.owner == self.request.user:
+            raise ValidationError("You cannot contribute to your own project.")
+        serializer.save(project=project, contributor=self.request.user)
 
 class UserProjectListView(generics.ListAPIView):
     serializer_class = ProjectSerializer
