@@ -1,10 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import API_BASE_URL from '../config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const RegisterPage = () => {
   const { register, handleSubmit, watch, setError, formState: { errors } } = useForm();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const password = watch('password');
 
@@ -46,7 +47,7 @@ const RegisterPage = () => {
       }
 
       console.log("Registration successful:", result);
-      // Redirect to login or show success message
+      navigate('/activate', { state: { email: data.email } }); // Redirect to activate page with email
     } catch (error) {
       console.error("Registration error:", error);
       // Show a generic error message if the fetch itself fails
