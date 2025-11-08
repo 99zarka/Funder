@@ -2,8 +2,19 @@ from rest_framework import serializers
 from django.db import models
 from .models import Project, Contribution
 
+class ProjectSerializerForContribution(serializers.ModelSerializer):
+    owner_full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Project
+        fields = ["id", "title", "owner", "owner_full_name"]
+
+    def get_owner_full_name(self, obj):
+        return f"{obj.owner.first_name} {obj.owner.last_name}"
+
 class ContributionSerializer(serializers.ModelSerializer):
     contributor_full_name = serializers.SerializerMethodField()
+    project = ProjectSerializerForContribution(read_only=True) # Use the simplified serializer
 
     class Meta:
         model = Contribution
