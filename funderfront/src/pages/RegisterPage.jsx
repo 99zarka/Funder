@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import API_BASE_URL from '../config';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -6,6 +6,12 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 const RegisterPage = () => {
   const { register, handleSubmit, watch, setError, formState: { errors } } = useForm();
   const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const password = watch('password');
 

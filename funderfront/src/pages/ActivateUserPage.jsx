@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import API_BASE_URL from '../config';
-import { Link, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useLocation and useNavigate
 
 const ActivateUserPage = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const location = useLocation(); // Initialize useLocation
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   // Effect to pre-fill email if passed from registration
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
@@ -6,6 +6,12 @@ import API_BASE_URL from '../config';
 const LoginPage = () => {
   const { register, handleSubmit, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const onSubmit = async (data) => {
     try {
