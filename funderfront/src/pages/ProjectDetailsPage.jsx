@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { useParams, useNavigate, Link } from 'react-router-dom'; // Import useNavigate and Link
 import { useForm } from 'react-hook-form';
 import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
@@ -12,7 +12,7 @@ const ProjectDetailsPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null); // State to store current user's ID
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm();
 
-  const fetchProjectDetails = async () => {
+  const fetchProjectDetails = useCallback(async () => { // Wrap in useCallback
     try {
       const response = await fetch(`${API_BASE_URL}/projects/${id}/`);
       const data = await response.json();
@@ -20,7 +20,7 @@ const ProjectDetailsPage = () => {
     } catch (error) {
       console.error('Error fetching project details:', error);
     }
-  };
+  }, [id]); // Add id to useCallback dependencies
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -34,7 +34,7 @@ const ProjectDetailsPage = () => {
     }
 
     fetchProjectDetails();
-  }, [id]);
+  }, [id, fetchProjectDetails]); // Add fetchProjectDetails to useEffect dependencies
 
   const onSubmitContribution = async (data) => {
     const token = localStorage.getItem('access_token');
