@@ -47,6 +47,7 @@ const RegisterPage = () => {
       }
 
       console.log("Registration successful:", result);
+      window.dispatchEvent(new Event('authChange')); // Dispatch custom event
       navigate('/activate', { state: { email: data.email } }); // Redirect to activate page with email
     } catch (error) {
       console.error("Registration error:", error);

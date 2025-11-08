@@ -6,25 +6,29 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists, false otherwise
-
-    const handleStorageChange = () => {
-      const newToken = localStorage.getItem('access_token');
-      setIsLoggedIn(!!newToken);
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('access_token');
+      setIsLoggedIn(!!token);
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    checkLoginStatus(); // Check status on mount
+
+    // Listen for custom event to update login status
+    window.addEventListener('authChange', checkLoginStatus);
+    // Also listen for storage events (for changes from other tabs/windows)
+    window.addEventListener('storage', checkLoginStatus);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', checkLoginStatus);
+      window.removeEventListener('storage', checkLoginStatus);
     };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    setIsLoggedIn(false);
+    setIsLoggedIn(false); // Update state immediately
+    window.dispatchEvent(new Event('authChange')); // Dispatch custom event
     navigate('/login');
   };
 

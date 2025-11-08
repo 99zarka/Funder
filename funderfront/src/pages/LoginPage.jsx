@@ -39,6 +39,7 @@ const LoginPage = () => {
       console.log("Login successful:", result);
       localStorage.setItem('access_token', result.access);
       localStorage.setItem('refresh_token', result.refresh);
+      window.dispatchEvent(new Event('authChange')); // Dispatch custom event
       navigate('/profile');
     } catch (error) {
       console.error("Login error:", error);
