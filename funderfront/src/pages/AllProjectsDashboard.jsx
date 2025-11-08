@@ -30,7 +30,7 @@ const AllProjectsDashboard = () => {
     setFilterDate(date);
     if (date) {
       try {
-        const response = await fetch(`${API_BASE_URL}/projects/search_by_date/?date=${date}`);
+        const response = await fetch(`${API_BASE_URL}/projects/search/?date=${date}`);
         const data = await response.json();
         setProjects(data);
       } catch (error) {
