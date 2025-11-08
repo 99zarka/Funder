@@ -64,23 +64,49 @@ const MyProjectsManagementPage = () => {
   };
 
   return (
-    <div>
-      <h1>My Projects Management</h1>
-      {myProjects.length > 0 ? (
-        myProjects.map((project) => (
-          <div key={project.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-            <h2><Link to={`/projects/${project.id}`}>{project.title}</Link></h2>
-            <p>{project.details}</p>
-            <p>Target: ${project.total_target} | Raised: ${project.current_funds}</p>
-            <p>Dates: {project.start_time} to {project.end_time}</p>
-            <button onClick={() => handleEditProject(project.id)}>Edit</button>
-            <button onClick={() => handleDeleteProject(project.id)}>Delete</button>
-            <Link to={`/projects/${project.id}`}>View Details</Link>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h1 className="text-3xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-6">My Projects Management</h1>
+        {myProjects.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {myProjects.map((project) => (
+              <div key={project.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-6 flex flex-col justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+                    <Link to={`/projects/${project.id}`} className="hover:underline">{project.title}</Link>
+                  </h2>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-3">{project.details}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Target: <span className="font-semibold">${project.total_target}</span></p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Raised: <span className="font-semibold text-green-600">${project.current_funding}</span></p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Dates: {project.start_time} to {project.end_time}</p>
+                </div>
+                <div className="flex flex-col space-y-2 mt-4">
+                  <button
+                    onClick={() => handleEditProject(project.id)}
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProject(project.id)}
+                    className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300 font-semibold"
+                  >
+                    Delete
+                  </button>
+                  <Link
+                    to={`/projects/${project.id}`}
+                    className="w-full text-center bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 font-semibold dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
-        ))
-      ) : (
-        <p>You haven't created any projects yet.</p>
-      )}
+        ) : (
+          <p className="text-center text-xl text-gray-600 dark:text-gray-400">You haven't created any projects yet.</p>
+        )}
+      </div>
     </div>
   );
 };

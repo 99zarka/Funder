@@ -17,8 +17,9 @@ function App() {
   console.log("App component rendered");
   return (
     <Router>
-      <Navbar />
-      <Routes>
+      <div>
+        <Navbar />
+        <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -32,6 +33,7 @@ function App() {
         <Route path="/edit-project/:id" element={<EditProjectPage />} /> {/* Add the new route */}
         <Route path="/users" element={<AllUsersPage />} /> {/* New route for all users page */}
       </Routes>
+      </div>
     </Router>
   );
 }

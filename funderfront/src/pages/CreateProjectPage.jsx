@@ -65,50 +65,74 @@ const CreateProjectPage = () => {
   };
 
   return (
-    <div>
-      <h1>Create New Project</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Project Title:</label>
-          <input type="text" {...register("title", { required: "Project Title is required" })} />
-          {errors.title && <p>{errors.title.message}</p>}
-        </div>
-        <div>
-          <label>Details:</label>
-          <textarea {...register("details", { required: "Details are required" })}></textarea>
-          {errors.details && <p>{errors.details.message}</p>}
-        </div>
-        <div>
-          <label>Total Target Amount:</label>
-          <input type="number" {...register("totalTarget", { required: "Total Target Amount is required", min: { value: 1, message: "Amount must be at least 1" } })} />
-          {errors.totalTarget && <p>{errors.totalTarget.message}</p>}
-        </div>
-        <div>
-          <label>Start Date:</label>
-          <input type="date" {...register("startDate", { required: "Start Date is required" })} />
-          {errors.startDate && <p>{errors.startDate.message}</p>}
-        </div>
-        <div>
-          <label>End Date:</label>
-          <input
-            type="date"
-            {...register("endDate", {
-              required: "End Date is required",
-              validate: (value) => {
-                const startDate = new Date(watch('startDate'));
-                const endDate = new Date(value);
-                return endDate >= startDate || "End Date cannot be before Start Date";
-              },
-            })}
-          />
-          {errors.endDate && <p>{errors.endDate.message}</p>}
-        </div>
-        {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
-        <button type="submit">Create Project</button>
-      </form>
-      <p>
-        <Link to="/my-projects">View My Projects</Link> or <Link to="/projects">View All Projects</Link>.
-      </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-6">Create New Project</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Title:</label>
+            <input
+              type="text"
+              {...register("title", { required: "Project Title is required" })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Details:</label>
+            <textarea
+              {...register("details", { required: "Details are required" })}
+              rows="4"
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            ></textarea>
+            {errors.details && <p className="text-red-500 text-sm mt-1">{errors.details.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Target Amount:</label>
+            <input
+              type="number"
+              {...register("totalTarget", { required: "Total Target Amount is required", min: { value: 1, message: "Amount must be at least 1" } })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+            {errors.totalTarget && <p className="text-red-500 text-sm mt-1">{errors.totalTarget.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date:</label>
+            <input
+              type="date"
+              {...register("startDate", { required: "Start Date is required" })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+            {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date:</label>
+            <input
+              type="date"
+              {...register("endDate", {
+                required: "End Date is required",
+                validate: (value) => {
+                  const startDate = new Date(watch('startDate'));
+                  const endDate = new Date(value);
+                  return endDate >= startDate || "End Date cannot be before Start Date";
+                },
+              })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+            {errors.endDate && <p className="text-red-500 text-sm mt-1">{errors.endDate.message}</p>}
+          </div>
+          {errors.general && <p className="text-red-500 text-sm mt-2 text-center">{errors.general.message}</p>}
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white p-3 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 font-semibold"
+          >
+            Create Project
+          </button>
+        </form>
+        <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
+          <Link to="/my-projects" className="text-indigo-600 dark:text-indigo-400 hover:underline">View My Projects</Link> or <Link to="/projects" className="text-indigo-600 dark:text-indigo-400 hover:underline">View All Projects</Link>.
+        </p>
+      </div>
     </div>
   );
 };

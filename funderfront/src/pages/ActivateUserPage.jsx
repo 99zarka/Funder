@@ -43,22 +43,30 @@ const ActivateUserPage = () => {
   };
 
   return (
-    <div>
-      <h1>Activate Your Account</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Activate</button>
-      </form>
-      {message && <p style={{ color: 'green' }}>{message} <Link to="/login">Login here</Link>.</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-6">Activate Your Account</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white p-3 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 font-semibold"
+          >
+            Activate
+          </button>
+        </form>
+        {message && <p className="text-green-600 dark:text-green-400 text-center mt-4">{message} <Link to="/login" className="text-indigo-600 dark:text-indigo-400 hover:underline">Login here</Link>.</p>}
+        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+      </div>
     </div>
   );
 };
