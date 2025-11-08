@@ -12,6 +12,16 @@ const ProjectDetailsPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null); // State to store current user's ID
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm();
 
+  const fetchProjectDetails = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/projects/${id}/`);
+      const data = await response.json();
+      setProject(data);
+    } catch (error) {
+      console.error('Error fetching project details:', error);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -22,16 +32,6 @@ const ProjectDetailsPage = () => {
         console.error('Error decoding token:', error);
       }
     }
-
-    const fetchProjectDetails = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/projects/${id}/`);
-        const data = await response.json();
-        setProject(data);
-      } catch (error) {
-        console.error('Error fetching project details:', error);
-      }
-    };
 
     fetchProjectDetails();
   }, [id]);
@@ -73,12 +73,8 @@ const ProjectDetailsPage = () => {
       }
 
       console.log('Contribution successful:', result);
-      // Update project funds or show success message
-      setProject((prevProject) => ({
-        ...prevProject,
-        current_funding: parseFloat(prevProject.current_funding) + parseFloat(data.contributionAmount),
-      }));
       reset({ contributionAmount: '' }); // Reset the form field
+      fetchProjectDetails(); // Re-fetch project details to update contributions and funding
     } catch (error) {
       console.error('Error contributing to project:', error);
       setError("general", { type: "manual", message: "Network error or server unreachable." });
