@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate and Link
 import API_BASE_URL from '../config';
+import formatDate from '../utils/dateFormatter';
 
 const MyProjectsManagementPage = () => {
   const [myProjects, setMyProjects] = useState([]);
@@ -78,7 +79,7 @@ const MyProjectsManagementPage = () => {
                   <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-3">{project.details}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Target: <span className="font-semibold">${project.total_target}</span></p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Raised: <span className="font-semibold text-green-600">${project.current_funding}</span></p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Dates: {project.start_time} to {project.end_time}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Dates: {formatDate(project.start_time)} to {formatDate(project.end_time)}</p>
                 </div>
                 <div className="flex flex-col space-y-2 mt-4">
                   <button

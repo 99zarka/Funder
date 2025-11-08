@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useParams } from 'react-router-dom'; // Import Link and useParams
 import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
 import API_BASE_URL from '../config';
+import formatDate from '../utils/dateFormatter';
 
 const UserProfilePage = () => {
   const { id } = useParams(); // Get id from URL params
@@ -219,7 +220,7 @@ const UserProfilePage = () => {
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Owner: <Link to={`/profile/${contribution.project.owner}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">{contribution.project.owner_full_name}</Link></p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Amount: <span className="font-semibold text-green-600">${contribution.amount}</span></p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Date: {new Date(contribution.timestamp).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Date: {formatDate(contribution.timestamp)}</p>
                   </div>
                 ))}
               </div>

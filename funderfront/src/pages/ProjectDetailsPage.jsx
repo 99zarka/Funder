@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'; // Import useNa
 import { useForm } from 'react-hook-form';
 import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
 import API_BASE_URL from '../config';
+import formatDate from '../utils/dateFormatter';
 
 const ProjectDetailsPage = () => {
   const { id } = useParams();
@@ -124,8 +125,8 @@ const ProjectDetailsPage = () => {
             <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">Progress: {progressPercentage.toFixed(2)}%</p>
-          <p><strong className="text-gray-700 dark:text-gray-300">Start Date:</strong> <span className="text-gray-900 dark:text-gray-100">{project.start_time}</span></p>
-          <p><strong className="text-gray-700 dark:text-gray-300">End Date:</strong> <span className="text-gray-900 dark:text-gray-100">{project.end_time}</span></p>
+          <p><strong className="text-gray-700 dark:text-gray-300">Start Date:</strong> <span className="text-gray-900 dark:text-gray-100">{formatDate(project.start_time)}</span></p>
+          <p><strong className="text-gray-700 dark:text-gray-300">End Date:</strong> <span className="text-gray-900 dark:text-gray-100">{formatDate(project.end_time)}</span></p>
         </div>
 
         <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-4 border-b pb-2">Contribute to this Project</h2>
@@ -170,7 +171,7 @@ const ProjectDetailsPage = () => {
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">
                   <strong className="mr-1">Date:</strong>
-                  {new Date(contribution.timestamp).toLocaleDateString()}
+                  {formatDate(contribution.timestamp)}
                 </p>
               </div>
             ))}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
 import API_BASE_URL from '../config';
+import formatDate from '../utils/dateFormatter';
 
 const AllProjectsDashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -79,7 +80,7 @@ const AllProjectsDashboard = () => {
                 <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">{project.details}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Owner: <Link to={`/profile/${project.owner}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">{project.owner_full_name}</Link></p>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Funds Raised: <span className="font-semibold text-green-600">${project.current_funding}</span> / <span className="font-semibold">${project.total_target}</span></p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Dates: {project.start_time} to {project.end_time}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Dates: {formatDate(project.start_time)} to {formatDate(project.end_time)}</p>
               </div>
               <Link to={`/projects/${project.id}`} className="mt-4 inline-block bg-indigo-600 text-white text-center py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">View Details</Link>
             </div>
