@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom'; // Import Link
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import API_BASE_URL from '../config';
+import { jwtDecode } from 'jwt-decode';
 
 const EditProjectPage = () => {
   const { id } = useParams();
@@ -17,6 +18,17 @@ const EditProjectPage = () => {
         navigate('/login');
         return;
       }
+
+      let currentUserId = null;
+      try {
+        const decodedToken = jwtDecode(token);
+        currentUserId = decodedToken.user_id;
+      } catch (decodeError) {
+        console.error("Error decoding token:", decodeError);
+        navigate('/login'); // Redirect if token is invalid
+        return;
+      }
+
       try {
         const response = await fetch(`${API_BASE_URL}/projects/${id}/`, {
           headers: {
@@ -24,9 +36,20 @@ const EditProjectPage = () => {
           },
         });
         if (!response.ok) {
-          throw new Error('Failed to fetch project');
+          // If project not found or other error during fetch, redirect to dashboard
+          navigate('/projects');
+          return;
         }
         const data = await response.json();
+
+        // Check if the current user is the owner of the project
+        // Assuming data.owner is directly the owner's ID (an integer)
+        // currentUserId is a string, so convert it to an integer for comparison
+        if (data.owner !== parseInt(currentUserId)) {
+          navigate(`/projects/${id}`); // Redirect to project details if not owner
+          return;
+        }
+
         reset({
           title: data.title,
           details: data.details,
@@ -65,9 +88,6 @@ const EditProjectPage = () => {
           end_time: data.endDate,
         }),
       });
-      if (!response.ok) {
-        throw new Error('Failed to update project');
-      }
       const result = await response.json();
 
       if (!response.ok) {
@@ -88,7 +108,10 @@ const EditProjectPage = () => {
         }
         if (result.non_field_errors) {
           setError("general", { type: "manual", message: result.non_field_errors[0] });
-        } else {
+        } else if (result.detail) { // Handle the permission denied error specifically
+          setError("general", { type: "manual", message: result.detail });
+        }
+        else {
           setError("general", { type: "manual", message: "An unexpected error occurred during project update." });
         }
         console.error('Error updating project:', result);
@@ -115,6 +138,7 @@ const EditProjectPage = () => {
     <div>
       <h1>Edit Project</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {errors.general && <p style={{ color: 'red' }}>{errors.general.message}</p>}
         <div>
           <label>Project Title:</label>
           <input type="text" {...register("title", { required: "Project Title is required" })} />
