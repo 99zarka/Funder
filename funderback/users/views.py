@@ -53,7 +53,12 @@ class UserActivateView(APIView):
 class UserProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserProfileSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
         # Prefetch related projects and contributions to avoid N+1 queries when serializing

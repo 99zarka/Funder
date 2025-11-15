@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 import re
 
 class User(AbstractUser):
-    mobile_phone = models.CharField(max_length=15, unique=True)
+    mobile_phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
     is_active = models.BooleanField(default=False)
 
     def clean(self):
